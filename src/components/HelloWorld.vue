@@ -36,7 +36,16 @@ export default {
   },
   methods: {
     genalicekey() {
-      this.alicekeys = this.pyodide.runPythonAsync('from pyUmral import keys\nprivkey = keys.UmbralPrivateKey.gen_key()\nprivkey');
+      if(this.pyodide) {
+        this.error = '';
+        this.pyodide.runPythonAsync('from pyUmral import keys\nprivkey = keys.UmbralPrivateKey.gen_key()\nprivkey')
+          .then((pyres) => {
+            console.log('alice keys', pyres);
+            this.alicekeys = pyres;
+          });
+      } else {
+        this.error = 'pyodide is not yet loaded';
+      }
     },
     encrypt() {},
     genbobkey() {},
@@ -74,8 +83,6 @@ export default {
     })
     */
   },
-  methods: {
-  }
 }
 </script>
 
