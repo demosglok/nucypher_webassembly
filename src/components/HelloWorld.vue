@@ -6,12 +6,12 @@
     <div>Status: {{status}}</div>
     <textarea v-model="data" cols="100" rows="5"></textarea>
     <div>
-      <button>generate alice keys</button>
-      <button>alice encrypt</button>
-      <button>generate bobs keys</button>
-      <button>grant</button>
-      <button>reencrypt</button>
-      <button>bob decrypt</button>
+      <button @click="genalicekey">generate alice keys</button>
+      <button @click="encrypt">alice encrypt</button>
+      <button @click="genbobkey">generate bobs keys</button>
+      <button @click="grant">grant</button>
+      <button @click="reencrypt">reencrypt</button>
+      <button @click="decrypt">bob decrypt</button>
     </div>
   </div>
 </template>
@@ -30,8 +30,19 @@ export default {
       pyodide: null,
       data: 'some data to encrypt',
       python: '',
-      status: 'initial'
+      status: 'initial',
+      alicekeys: null
     }
+  },
+  methods: {
+    genalicekey() {
+      this.alicekeys = this.pyodide.runPythonAsync('from pyUmral import keys\nprivkey = keys.UmbralPrivateKey.gen_key()\nprivkey');
+    },
+    encrypt() {},
+    genbobkey() {},
+    grant() {},
+    reencrypt() {},
+    decrypt() {}
   },
   mounted() {
 /*
