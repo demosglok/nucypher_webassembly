@@ -1,0 +1,73 @@
+<template>
+  <div class="hello">
+    <h1>{{ msg }}</h1>
+    <p>simple playground to test python in WebAssembly working with pyumbral lib</p>
+    <div class="error" v-if="error">{{error}}</div>
+    <div>Status: {{status}}</div>
+    <textarea v-model="data" cols="100" rows="5"></textarea>
+    <div>
+      <button>generate alice keys</button>
+      <button>alice encrypt</button>
+      <button>generate bobs keys</button>
+      <button>grant</button>
+      <button>reencrypt</button>
+      <button>bob decrypt</button>
+    </div>
+  </div>
+</template>
+
+<script>
+//import pyodide from 'pyodide-loader';
+import pyodideLoader from '@/pyodide.js';
+export default {
+  name: 'HelloWorld',
+  props: {
+    msg: String
+  },
+  data() {
+    return {
+      error: null,
+      pyodide: null,
+      data: 'some data to encrypt',
+      python: '',
+      status: 'initial'
+    }
+  },
+  mounted() {
+/*
+    if(window.languagePluginLoader) {
+      window.languagePluginLoader.then(() => {
+        console.log('wasm & python loaded', window.pyodide);
+      })
+    }
+    */
+
+    pyodideLoader('http://localhost:8080/pyodide/').then(() => {
+      console.log('python loaded', window.pyodide);
+      this.pyodide = window.pyodide;
+      const pyver = this.pyodide.runPython('import sys\nsys.version');
+      console.log('python res',pyver);
+      this.status = `python loaded `;
+      this.python = pyver;
+      this.pyodide.loadPackage('pyUmbral').then(()=>{
+        console.log('pyUmbral loaded')
+        this.status='pyUmral loaded'
+        //const b = pyodideInstance.runPython('from pyumbral import keys\nprivkey = keys.UmbralPrivateKey.gen_key()\nprivkey');
+        //console.log('pyUmbral res',b);
+      });
+    })
+
+    /*
+    pyodide('http://localhost:8080/pyodide2/').then((loaded)=>{
+      console.log('python loaded', loaded);
+    })
+    */
+  },
+  methods: {
+  }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+</style>
