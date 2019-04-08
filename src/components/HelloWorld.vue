@@ -38,7 +38,7 @@ export default {
     genalicekey() {
       if(this.pyodide) {
         this.error = '';
-        this.pyodide.runPythonAsync('from pyUmral import keys\nprivkey = keys.UmbralPrivateKey.gen_key()\nprivkey')
+        this.pyodide.runPythonAsync('from umbral import keys\nprivkey = keys.UmbralPrivateKey.gen_key()\nprivkey')
           .then((pyres) => {
             console.log('alice keys', pyres);
             this.alicekeys = pyres;
@@ -62,18 +62,28 @@ export default {
     }
     */
 
-    pyodideLoader('http://localhost:8080/pyodide/').then(() => {
+    pyodideLoader('http://localhost:8080/pyodide2/').then(() => {
       console.log('python loaded', window.pyodide);
       this.pyodide = window.pyodide;
       const pyver = this.pyodide.runPython('import sys\nsys.version');
       console.log('python res',pyver);
       this.status = `python loaded `;
       this.python = pyver;
-      this.pyodide.loadPackage('pyUmbral').then(()=>{
-        console.log('pyUmbral loaded')
-        this.status='pyUmral loaded'
+      this.pyodide.loadPackage('umbral').then(()=>{
+        console.log('umbral loaded')
+        this.status='umbral loaded'
         //const b = pyodideInstance.runPython('from pyumbral import keys\nprivkey = keys.UmbralPrivateKey.gen_key()\nprivkey');
         //console.log('pyUmbral res',b);
+
+        this.pyodide.loadPackage('asn1crypto').then(()=>{
+          console.log('asn1crypto loaded')
+        });
+        this.pyodide.loadPackage('cffi').then(()=>{
+          console.log('cffi loaded')
+        });
+        this.pyodide.loadPackage('cryptography').then(()=>{
+          console.log('cryptography loaded')
+        });
       });
     })
 
